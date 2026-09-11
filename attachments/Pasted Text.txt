@@ -1,0 +1,37 @@
+Yes, I get it.
+You want the working tool itself to feel like Explee — intelligent, autonomous, research-driven, and premium. Not a basic form that just spits out a list.
+Here’s a refined prompt focused specifically on making the tool experience feel like Explee:
+
+Prompt:
+Design a premium, intelligent AI tool interface inspired by explee.com. The product is a loan matching engine that feels like an autonomous research agent.
+Core experience:
+After the user fills a short form (loan amount, income range, location, urgency, repayment preference) and clicks “Analyze”, the interface should transform into a live research/agent state that feels like Explee’s AI working:
+	•	Full-screen or large centered “working” state
+	•	Dark or frosted glass overlay with soft depth
+	•	Animated research visualization:
+	◦	Scanning radar or data streams
+	◦	Floating cards of loan apps being evaluated and scored in real time
+	◦	Subtle progress indicators and confidence scores rising
+	•	Live status text that types or cycles naturally, for example:
+	◦	“Researching available loan apps across platforms…”
+	◦	“Scoring options against your profile…”
+	◦	“Analyzing real user outcomes and approval patterns…”
+	◦	“Ranking best matches by speed, fit, and reliability…”
+	◦	“Finalizing top recommendations…”
+The whole analyzing phase should feel intelligent and autonomous (like an AI agent is doing real work), lasting 4–6 seconds, then smoothly transition into results.
+Results view (after analysis):
+	•	Clean, high-trust layout
+	•	Top recommended loan apps shown as polished cards
+	•	Each card includes a short AI-generated reason why it matched
+	•	Strong social proof section directly underneath (Explee-style): real-looking user quotes about successfully getting the loan they wanted + people who used the repayment PDF guide
+	•	Soft, minimal, professional design with excellent spacing
+Overall aesthetic:
+	•	Premium SaaS feel (like Explee)
+	•	Lots of white space
+	•	Soft shadows and rounded cards
+	•	Deep blue + muted green accents
+	•	Modern, clean typography
+	•	Feels like a serious research tool, not a cheap affiliate page
+
+This version is specifically tuned so the tool itself (the analyzing + results experience) feels like Explee’s working agent.
+Want me to make it even closer (more specific animation details or exact layout references)? Just say.

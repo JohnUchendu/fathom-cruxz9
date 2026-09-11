@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Fathom",
+      "hasCanvas": false,
+      "bodyTextLen": 2206,
+      "bodyTextHash": "68225ab69eea5ebf919bd4142ee84814875cbb43283a0e45005816b5454424f0",
+      "bodyTextPrefix": "Fathom RESEARCH Method Brief the agent PERSONAL LOAN RESEARCH Br",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Fathom",
+      "hasCanvas": false,
+      "bodyTextLen": 2046,
+      "bodyTextHash": "b1f87e5aea7df27a72e1a3bbdd47ecaf617d4d8a4cb7f79ee50185f65cb9cf6d",
+      "bodyTextPrefix": "Fathom RESEARCH Brief the agent PERSONAL LOAN RESEARCH Brief the",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
