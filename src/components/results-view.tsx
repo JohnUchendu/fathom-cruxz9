@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Clock3, ExternalLink, Percent, Wallet } from "lucide-react";
 import { getApplyLink } from "@/lib/lenders";
+import { ACTIVE_PRODUCT } from "@/lib/digital-products";
 import { useSession } from "@/lib/session";
 import { INCOME_BANDS, NG_STATES, REPAYMENT_OPTIONS, URGENCY_OPTIONS } from "@/lib/types";
 import { cn, currency, currencyExact } from "@/lib/utils";
 import { AppIcon } from "./app-icon";
-import { GuideUpsell } from "./guide-upsell";
+import { ProductUpsellCard } from "./product-upsell-card";
 import { SocialProof } from "./social-proof";
 
 export function ResultsView() {
@@ -165,7 +166,7 @@ export function ResultsView() {
         </Link>
       </section>
 
-      <GuideUpsell />
+      <ProductUpsellCard product={ACTIVE_PRODUCT} />
 
       <SocialProof />
     </main>

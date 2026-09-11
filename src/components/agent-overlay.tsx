@@ -1,33 +1,53 @@
 import { useEffect, useMemo, useState } from "react";
 import { LENDERS } from "@/lib/lenders";
 import { rankLenders } from "@/lib/match";
-import { useSession } from "@/lib/session";
-import { NG_STATES } from "@/lib/types";
+import { ANALYZING_DURATION_MS, useSession } from "@/lib/session";
+import { NG_STATES, type LenderKind } from "@/lib/types";
 import { cn, currency, prefersReducedMotion } from "@/lib/utils";
 import { AppIcon } from "./app-icon";
 
-const STATUS = [
-  { at: 0, text: "Researching loan apps live in the Nigerian market…" },
-  { at: 1100, text: "Scoring options against your profile…" },
-  { at: 2300, text: "Weighing funding speed against approval odds…" },
-  { at: 3600, text: "Ranking best matches by rate, speed, and fit…" },
-  { at: 4600, text: "Finalizing top recommendations…" },
+const STATUS_FRACTIONS: { at: number; text: string }[] = [
+  { at: 0, text: "Opening the full lender file…" },
+  { at: 0.06, text: "Checking digital banks…" },
+  { at: 0.22, text: "Checking loan apps…" },
+  { at: 0.42, text: "Checking microfinance banks…" },
+  { at: 0.6, text: "Checking commercial banks…" },
+  { at: 0.76, text: "Checking development finance…" },
+  { at: 0.88, text: "Weighing rate, speed, and fit…" },
+  { at: 0.95, text: "Finalizing your shortlist…" },
 ];
 
-const LOGS = [
-  `opening ${LENDERS.length} loan-app terms`,
-  "FairMoney · funds same day",
-  "Renmoney · income floor ₦150k/mo",
-  "Kuda · overdraft, active account only",
-  "Carbon · clearest cost breakdown",
-  "PalmCredit · fastest small-ticket payout",
-  "checking CBN licensing per app",
-  "weighting speed against urgency",
-  "reading rate-band notes",
-  "dropping out-of-band apps",
-  "sorting shortlist by composite fit",
-  "drafting match reasons",
+const KIND_ORDER: LenderKind[] = [
+  "Digital bank",
+  "Loan app",
+  "Microfinance bank",
+  "Commercial bank",
+  "Development finance",
 ];
+
+function buildLogs(): string[] {
+  const logs: string[] = [`opening ${LENDERS.length} lender records`];
+  for (const kind of KIND_ORDER) {
+    const group = LENDERS.filter((l) => l.kind === kind);
+    if (group.length === 0) continue;
+    logs.push(`— scanning ${kind.toLowerCase()}s —`);
+    for (const l of group) {
+      logs.push(`${l.name} · ${l.operator}`);
+    }
+  }
+  logs.push(
+    "cross-checking rate bands",
+    "checking CBN licensing per entry",
+    "weighting speed against urgency",
+    "dropping out-of-band entries",
+    "sorting shortlist by composite fit",
+    "drafting match reasons",
+  );
+  return logs;
+}
+
+const LOGS = buildLogs();
+const LOG_INTERVAL_MS = Math.max(220, Math.floor(ANALYZING_DURATION_MS / (LOGS.length + 6)));
 
 export function AgentOverlay() {
   const profile = useSession((s) => s.profile);
@@ -44,7 +64,7 @@ export function AgentOverlay() {
 
   useEffect(() => {
     if (reduced) {
-      setElapsed(5400);
+      setElapsed(ANALYZING_DURATION_MS);
       return;
     }
     const t0 = performance.now();
@@ -67,18 +87,27 @@ export function AgentOverlay() {
     const topIds = new Set(ranked.slice(0, 4).map((r) => r.lender.id));
     return LENDERS.slice(0, 8).map((lender, i) => ({
       lender,
-      appearAt: 180 + i * 160,
+      appearAt: 260 + i * 220,
       score: scoreById.get(lender.id) ?? 40 + ((i * 13) % 30),
       shortlist: topIds.has(lender.id),
     }));
   }, [ranked, scoreById]);
 
+  const STATUS = useMemo(
+    () => STATUS_FRACTIONS.map((s) => ({ at: s.at * ANALYZING_DURATION_MS, text: s.text })),
+    [],
+  );
+
   const status = [...STATUS].reverse().find((s) => elapsed >= s.at)?.text ?? STATUS[0].text;
   const typed = useTyped(status, elapsed < 40);
-  const progress = Math.min(100, (elapsed / 5200) * 100);
-  const confidence = Math.min(96, 12 + (elapsed / 5200) * 84);
+  const progress = Math.min(100, (elapsed / (ANALYZING_DURATION_MS * 0.97)) * 100);
+  const confidence = Math.min(96, 10 + (elapsed / ANALYZING_DURATION_MS) * 86);
   const place = NG_STATES.find((s) => s.code === profile?.state)?.name ?? profile?.state;
-  const logIndex = Math.min(LOGS.length - 1, Math.floor(elapsed / 420));
+  const logIndex = Math.min(LOGS.length - 1, Math.floor(elapsed / LOG_INTERVAL_MS));
+  const scanned = Math.min(
+    LENDERS.length,
+    Math.round((elapsed / ANALYZING_DURATION_MS) * LENDERS.length),
+  );
 
   return (
     <div
@@ -88,19 +117,19 @@ export function AgentOverlay() {
       aria-busy="true"
     >
       <div className="pointer-events-none absolute inset-0 bg-bg/85" />
-      <div className="relative flex h-12 shrink-0 items-center justify-between px-4 sm:h-16 sm:px-5">
+      <div className="relative flex min-h-12 shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-2 sm:h-16 sm:px-5 sm:py-0">
         <p className="text-xs font-medium uppercase tracking-widest text-text-soft/70">
           Fathom agent · live
         </p>
-        <p className="font-mono text-xs tabular-nums text-text-soft/60">
+        <p className="font-mono text-[11px] tabular-nums text-text-soft/60 sm:text-xs">
           {profile ? currency(profile.amount) : ""} {place ? `· ${place}` : ""}
         </p>
       </div>
 
-      <div className="relative flex min-h-0 flex-1 flex-col items-center px-4 pb-6 sm:justify-center">
-        <p className="mb-4 min-h-10 max-w-xl px-1 text-center font-display text-lg font-semibold tracking-tight text-text sm:mb-6 sm:min-h-12 sm:text-2xl">
+      <div className="relative flex min-h-0 flex-1 flex-col items-center overflow-y-auto px-4 pb-6 sm:justify-center">
+        <p className="mb-3 min-h-10 max-w-xl px-1 text-center font-display text-base font-semibold tracking-tight text-text sm:mb-6 sm:min-h-12 sm:text-2xl">
           {typed}
-          <span className="caret-blink ml-0.5 inline-block h-5 w-px translate-y-0.5 bg-teal align-middle" />
+          <span className="caret-blink ml-0.5 inline-block h-4 w-px translate-y-0.5 bg-teal align-middle sm:h-5" />
         </p>
 
         <div className="flex w-full max-w-5xl items-center justify-center gap-8">
@@ -114,8 +143,10 @@ export function AgentOverlay() {
         </div>
 
         <div className="mt-4 w-full max-w-md sm:mt-8">
-          <div className="mb-2 flex items-center justify-between text-xs">
-            <span className="shimmer-text font-medium">Scanning apps</span>
+          <div className="mb-2 flex items-center justify-between text-[11px] sm:text-xs">
+            <span className="shimmer-text font-medium">
+              Scanning {scanned}/{LENDERS.length} entries
+            </span>
             <span className="font-mono tabular-nums text-text-soft/70">
               Confidence {confidence.toFixed(0)}%
             </span>
@@ -126,7 +157,7 @@ export function AgentOverlay() {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="mt-2 truncate text-center font-mono text-xs text-muted sm:mt-3">
+          <p className="mt-2 truncate px-2 text-center font-mono text-[11px] text-muted sm:mt-3 sm:text-xs">
             {LOGS[logIndex]}
           </p>
         </div>
@@ -155,13 +186,17 @@ function EvalColumn({
     <ul className="flex flex-col gap-2">
       {items.map((item) => {
         const visible = elapsed >= item.appearAt;
-        const scoring = elapsed >= 1100;
-        const judged = elapsed >= 2800;
+        const scoring = elapsed >= ANALYZING_DURATION_MS * 0.2;
+        const judgeAt = ANALYZING_DURATION_MS * 0.55;
+        const selectAt = ANALYZING_DURATION_MS * 0.8;
+        const judged = elapsed >= judgeAt;
+        const scoreStart = ANALYZING_DURATION_MS * 0.2;
+        const scoreSpan = ANALYZING_DURATION_MS * 0.45;
         const shownScore = scoring
-          ? Math.min(item.score, 20 + ((elapsed - 1100) / 2200) * item.score)
+          ? Math.min(item.score, 20 + ((elapsed - scoreStart) / scoreSpan) * item.score)
           : 0;
         const rejected = judged && !item.shortlist;
-        const selected = elapsed >= 4000 && item.shortlist;
+        const selected = elapsed >= selectAt && item.shortlist;
         return (
           <li
             key={item.lender.id}
@@ -205,7 +240,7 @@ function Radar({ progress }: { progress: number }) {
     { x: 50, y: 50, d: "0.1s" },
   ];
   return (
-    <div className="relative size-36 shrink-0 overflow-hidden rounded-full sm:size-52 md:size-56">
+    <div className="relative size-28 shrink-0 overflow-hidden rounded-full sm:size-52 md:size-56">
       <div className="absolute inset-0 rounded-full border border-border" />
       <div className="radar-ring absolute inset-5 rounded-full border border-teal/30" />
       <div className="radar-ring absolute inset-10 rounded-full border border-border-strong [animation-delay:0.6s]" />
@@ -220,8 +255,10 @@ function Radar({ progress }: { progress: number }) {
         ))}
       </div>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <p className="font-mono text-xs uppercase tracking-widest text-text-soft/60">Scan</p>
-        <p className="mt-1 font-display text-3xl font-semibold tabular-nums text-text">
+        <p className="font-mono text-[10px] uppercase tracking-widest text-text-soft/60 sm:text-xs">
+          Scan
+        </p>
+        <p className="mt-1 font-display text-2xl font-semibold tabular-nums text-text sm:text-3xl">
           {Math.round(progress)}
         </p>
       </div>

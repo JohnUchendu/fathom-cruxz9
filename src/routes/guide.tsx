@@ -128,8 +128,8 @@ function GuidePage() {
         </p>
         <p className="mt-4 text-xs leading-relaxed text-muted">
           Want the habits that shrink this number over time?{" "}
-          <Link to="/playbook" className="text-teal hover:underline">
-            Get the Repayment Playbook
+          <Link to="/kit" className="text-teal hover:underline">
+            Get the Fathom Borrowing Kit
           </Link>
           .
         </p>

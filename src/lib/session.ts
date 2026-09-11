@@ -6,6 +6,14 @@ import { prefersReducedMotion, sleep } from "./utils";
 
 export type Phase = "brief" | "analyzing" | "results";
 
+/** How long the analyzing overlay runs before showing results. Deliberately
+ * long — the overlay is doing real work (scoring) almost instantly, but the
+ * pacing is intentional so it reads as a careful, category-by-category scan
+ * rather than a spinner. Keep this in sync with agent-overlay.tsx's status
+ * and log pacing, which imports it. */
+export const ANALYZING_DURATION_MS = 20000;
+const ANALYZING_DURATION_REDUCED_MS = 900;
+
 type Session = {
   phase: Phase;
   profile: Profile | null;
@@ -35,7 +43,7 @@ export const useSession = create<Session>((set) => ({
       },
     }).catch(() => ({ ok: false as const }));
 
-    const duration = prefersReducedMotion() ? 900 : 5400;
+    const duration = prefersReducedMotion() ? ANALYZING_DURATION_REDUCED_MS : ANALYZING_DURATION_MS;
     await sleep(duration);
 
     let ai: { id: string; reason: string }[] | null = null;

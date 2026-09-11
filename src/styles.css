@@ -54,6 +54,7 @@
     background: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-sans);
+    overflow-x: hidden;
   }
 
   h1,
@@ -113,6 +114,86 @@ input[type="range"].amount-range::-moz-range-thumb {
   border: 0;
   border-radius: 50%;
   background: var(--color-teal);
+}
+
+.bh-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bh-spin 46s linear infinite;
+}
+
+.bh-ring-2 {
+  animation-duration: 68s;
+  animation-direction: reverse;
+}
+
+.bh-ring-3 {
+  animation-duration: 96s;
+}
+
+@keyframes bh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bh-glow {
+  animation: bh-pulse 5.5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes bh-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.06);
+  }
+}
+
+.bh-horizon {
+  animation: bh-horizon-pulse 5.5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes bh-horizon-pulse {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.bh-particle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-name: bh-infall;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.35);
+  animation-iteration-count: infinite;
+}
+
+@keyframes bh-infall {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(var(--bh-tx), var(--bh-ty)) scale(0.15);
+    opacity: 0;
+  }
 }
 
 /* Constellation background used once, in the hero */
@@ -237,6 +318,11 @@ input[type="range"].amount-range::-moz-range-thumb {
   }
 }
 
+.marquee-row {
+  overflow: hidden;
+  width: 100%;
+}
+
 .marquee-track {
   display: flex;
   width: max-content;
@@ -293,8 +379,16 @@ input[type="range"].amount-range::-moz-range-thumb {
   .shimmer-text,
   .constellation-dot,
   .marquee-track,
-  .drift {
+  .drift,
+  .bh-ring,
+  .bh-glow,
+  .bh-horizon,
+  .bh-particle {
     animation: none !important;
+  }
+
+  .bh-particle {
+    opacity: 0.5 !important;
   }
 
   .card-lift:hover {

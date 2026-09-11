@@ -55,7 +55,7 @@ function ReferralsPage() {
                     href={getReferralLink(p)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-flex h-9 items-center gap-1.5 rounded-full bg-teal px-3.5 text-xs font-medium text-teal-ink transition-colors duration-150 hover:bg-teal-strong"
+                    className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-full bg-teal px-4 text-xs font-medium text-teal-ink transition-colors duration-150 hover:bg-teal-strong"
                   >
                     Open account
                     <ExternalLink className="size-3" strokeWidth={1.75} />

@@ -24,11 +24,14 @@ export function Footer() {
           <Link to="/referrals" className="hover:text-text-soft">
             Referrals
           </Link>
-          <Link to="/playbook" className="hover:text-text-soft">
-            Repayment guide
+          <Link to="/kit" className="hover:text-text-soft">
+            Borrowing Kit
           </Link>
           <span>Educational matching · Not a credit offer</span>
         </div>
+      </div>
+      <div className="border-t border-border/70 px-5 py-3 text-center text-xs text-muted">
+        Made with 🌌
       </div>
     </footer>
   );

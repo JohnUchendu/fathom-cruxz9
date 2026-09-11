@@ -1,48 +1,117 @@
-const PATHS = [
-  "M -40 80 C 120 40, 220 160, 380 90 S 620 20, 840 110",
-  "M -40 220 C 100 260, 200 140, 340 200 S 560 300, 840 210",
-  "M -40 340 C 140 300, 260 380, 420 320 S 660 260, 840 330",
-  "M -40 20 C 160 70, 240 -10, 400 40 S 700 110, 840 40",
-];
+const CX = 400;
+const CY = 175;
 
-const DOTS = [
-  { x: 80, y: 62, d: "0s" },
-  { x: 220, y: 118, d: "0.6s" },
-  { x: 340, y: 78, d: "1.1s" },
-  { x: 470, y: 180, d: "0.3s" },
-  { x: 560, y: 250, d: "1.6s" },
-  { x: 690, y: 96, d: "0.9s" },
-  { x: 130, y: 260, d: "1.9s" },
-  { x: 400, y: 300, d: "0.4s" },
-  { x: 620, y: 330, d: "1.3s" },
-  { x: 760, y: 200, d: "0.1s" },
-];
+// Deterministic (no Math.random) so server and client render identically.
+const PARTICLES = Array.from({ length: 16 }, (_, i) => {
+  const angle = (i / 16) * Math.PI * 2 + (i % 2 === 0 ? 0.12 : -0.1);
+  const radius = 75 + ((i * 37) % 110); // 75–185
+  const x = CX + Math.cos(angle) * radius;
+  const y = CY + Math.sin(angle) * radius * 0.55; // flatten toward the disk plane
+  const tx = (CX - x) * 0.88;
+  const ty = (CY - y) * 0.88;
+  const duration = 5 + (i % 5) * 0.9;
+  const delay = (i % 8) * 0.7;
+  return { x, y, tx, ty, duration, delay, r: i % 3 === 0 ? 2.2 : 1.4 };
+});
+
+// A sparse field of distant, unrelated background stars.
+const STARS = [
+  { x: 40, y: 40 }, { x: 130, y: 330 }, { x: 60, y: 210 }, { x: 720, y: 60 },
+  { x: 760, y: 300 }, { x: 660, y: 350 }, { x: 30, y: 120 }, { x: 200, y: 30 },
+  { x: 250, y: 370 }, { x: 780, y: 180 }, { x: 100, y: 380 },
+].map((s, i) => ({ ...s, d: `${(i % 6) * 0.4}s` }));
 
 export function NetworkBackground() {
   return (
     <div className="constellation" aria-hidden>
-      <svg className="drift" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
-        {PATHS.map((d, i) => (
-          <path
-            key={i}
-            d={d}
-            fill="none"
-            stroke="var(--color-border-strong)"
-            strokeWidth="1"
-            opacity="0.5"
-          />
-        ))}
-        {DOTS.map((dot, i) => (
+      <svg className="drift" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="bh-glow-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--color-teal)" stopOpacity="0.55" />
+            <stop offset="45%" stopColor="var(--color-teal)" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="var(--color-teal)" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="bh-horizon-grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#000" stopOpacity="1" />
+            <stop offset="72%" stopColor="#000" stopOpacity="1" />
+            <stop offset="100%" stopColor="var(--color-teal)" stopOpacity="0.9" />
+          </radialGradient>
+        </defs>
+
+        {STARS.map((s, i) => (
           <circle
             key={i}
             className="constellation-dot"
-            cx={dot.x}
-            cy={dot.y}
-            r="2.5"
-            fill="var(--color-teal)"
-            style={{ animationDelay: dot.d }}
+            cx={s.x}
+            cy={s.y}
+            r="1.4"
+            fill="var(--color-text-soft)"
+            style={{ animationDelay: s.d }}
           />
         ))}
+
+        {/* outer glow */}
+        <circle className="bh-glow" cx={CX} cy={CY} r="150" fill="url(#bh-glow-grad)" />
+
+        {/* accretion rings */}
+        <ellipse
+          className="bh-ring bh-ring-3"
+          cx={CX}
+          cy={CY}
+          rx="185"
+          ry="48"
+          fill="none"
+          stroke="var(--color-teal)"
+          strokeOpacity="0.18"
+          strokeWidth="1"
+          transform={`rotate(-8 ${CX} ${CY})`}
+        />
+        <ellipse
+          className="bh-ring bh-ring-2"
+          cx={CX}
+          cy={CY}
+          rx="150"
+          ry="38"
+          fill="none"
+          stroke="var(--color-teal)"
+          strokeOpacity="0.3"
+          strokeWidth="1.5"
+          transform={`rotate(6 ${CX} ${CY})`}
+        />
+        <ellipse
+          className="bh-ring"
+          cx={CX}
+          cy={CY}
+          rx="112"
+          ry="27"
+          fill="none"
+          stroke="var(--color-teal)"
+          strokeOpacity="0.5"
+          strokeWidth="2"
+          transform={`rotate(-4 ${CX} ${CY})`}
+        />
+
+        {/* infalling particles */}
+        {PARTICLES.map((p, i) => (
+          <circle
+            key={i}
+            className="bh-particle"
+            cx={p.x}
+            cy={p.y}
+            r={p.r}
+            fill="var(--color-teal)"
+            style={{
+              ["--bh-tx" as string]: `${p.tx}px`,
+              ["--bh-ty" as string]: `${p.ty}px`,
+              animationDuration: `${p.duration}s`,
+              animationDelay: `${p.delay}s`,
+            }}
+          />
+        ))}
+
+        {/* photon ring + event horizon, drawn last so it sits above the disk */}
+        <circle cx={CX} cy={CY} r="40" fill="none" stroke="var(--color-teal)" strokeOpacity="0.45" strokeWidth="1" />
+        <circle className="bh-horizon" cx={CX} cy={CY} r="34" fill="url(#bh-horizon-grad)" />
       </svg>
     </div>
   );

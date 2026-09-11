@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ArrowDown } from "lucide-react";
 import { AgentOverlay } from "@/components/agent-overlay";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -24,6 +25,7 @@ function Home() {
       ) : (
         <>
           <Hero />
+          <BriefSection />
           <LogoMarquee />
           <HowItWorks />
           <RatingsCarousel />
@@ -35,55 +37,68 @@ function Home() {
   );
 }
 
+// Deliberately just the statement + the black hole. Kept short on purpose —
+// a tall, content-heavy section dilutes the background effect (it gets
+// scaled to fit and ends up as a thin band buried behind other content,
+// especially once things stack on mobile). Short section, full-strength
+// visual, clear CTA down to the form.
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative flex min-h-[560px] items-center overflow-hidden sm:min-h-[620px]">
       <NetworkBackground />
-      <div className="relative mx-auto grid max-w-6xl items-start gap-10 px-5 py-10 lg:grid-cols-[1fr_minmax(0,32rem)] lg:gap-14 lg:py-14">
-        <div className="lg:sticky lg:top-24 lg:pt-4">
-          <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs text-muted">
-            <span>{LENDERS.length} loan apps compared</span>
-            <span className="text-border-strong">·</span>
-            <span>₦2,000–₦6M range covered</span>
-            <span className="text-border-strong">·</span>
-            <span>No BVN required to scan</span>
-          </p>
-          <h1 className="mt-4 max-w-lg font-display text-4xl font-semibold tracking-tight text-text sm:text-5xl">
-            Find the loan app that actually fits, before you install one.
-          </h1>
-          <p className="mt-5 max-w-md text-base leading-relaxed text-text-soft">
-            Fathom scores Nigerian loan apps against your amount, income, timing, and how you
-            want to repay — then returns a ranked shortlist with reasons and a direct apply
-            link, not an ad slot.
-          </p>
-          <dl className="mt-8 grid grid-cols-3 gap-4 border-t border-border pt-5">
+      <div className="relative mx-auto w-full max-w-3xl px-5 py-16 text-center sm:py-20">
+        <p className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-xs text-muted">
+          <span>{LENDERS.length} loan apps compared</span>
+          <span className="text-border-strong">·</span>
+          <span>₦2,000–₦6M range covered</span>
+          <span className="text-border-strong">·</span>
+          <span>No BVN required to scan</span>
+        </p>
+        <h1 className="mx-auto mt-5 max-w-2xl font-display text-4xl font-semibold tracking-tight text-text sm:text-6xl">
+          Find the loan app that actually fits, before you install one.
+        </h1>
+        <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-text-soft">
+          Fathom scores Nigerian loan apps against your amount, income, timing, and how you
+          want to repay — then returns a ranked shortlist with reasons and a direct apply
+          link, not an ad slot.
+        </p>
+
+        <div className="mt-8 flex flex-col items-center gap-4">
+          <button
+            type="button"
+            onClick={() => document.getElementById("brief")?.scrollIntoView({ behavior: "smooth" })}
+            className="inline-flex h-12 items-center gap-2 rounded-full bg-teal px-6 text-sm font-medium text-teal-ink transition-colors duration-150 hover:bg-teal-strong"
+          >
+            Brief the agent
+            <ArrowDown className="size-4" strokeWidth={1.75} />
+          </button>
+
+          <dl className="mt-2 flex gap-8">
             <div>
               <dt className="text-xs text-muted">Apps in the scan</dt>
-              <dd className="mt-1 font-display text-2xl font-semibold tabular-nums text-text">
+              <dd className="mt-1 font-display text-xl font-semibold tabular-nums text-text">
                 {LENDERS.length}
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-muted">Typical scan</dt>
-              <dd className="mt-1 font-display text-2xl font-semibold text-text">5s</dd>
+              <dt className="text-xs text-muted">Full scan</dt>
+              <dd className="mt-1 font-display text-xl font-semibold text-text">~20s</dd>
             </div>
             <div>
               <dt className="text-xs text-muted">Placement sold</dt>
-              <dd className="mt-1 font-display text-2xl font-semibold text-text">None</dd>
+              <dd className="mt-1 font-display text-xl font-semibold text-text">None</dd>
             </div>
           </dl>
-          <ul className="mt-8 hidden divide-y divide-border border-t border-border lg:block">
-            {LENDERS.slice(0, 5).map((l) => (
-              <li key={l.id} className="flex items-baseline justify-between gap-4 py-2.5">
-                <span className="text-sm text-text">{l.name}</span>
-                <span className="text-xs text-muted">{l.kind}</span>
-              </li>
-            ))}
-            <li className="py-2.5 text-xs text-muted">
-              {LENDERS.length - 5} more apps in the scan
-            </li>
-          </ul>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function BriefSection() {
+  return (
+    <section className="border-t border-border bg-bg-soft">
+      <div className="mx-auto max-w-xl px-5 py-14 sm:py-16">
         <MatchForm />
       </div>
     </section>

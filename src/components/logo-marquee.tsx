@@ -5,7 +5,7 @@ export function LogoMarquee() {
 
   return (
     <div className="marquee-row border-y border-border bg-bg-soft py-5 [mask-image:linear-gradient(90deg,transparent,black_8%,black_92%,transparent)]">
-      <div className="marquee-track gap-10 pl-10" style={{ ["--marquee-duration" as string]: "38s" }}>
+      <div className="marquee-track gap-10 pl-10" style={{ ["--marquee-duration" as string]: "95s" }}>
         {row.map((l, i) => (
           <div
             key={`${l.id}-${i}`}

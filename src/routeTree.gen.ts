@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppsRouteImport } from './routes/apps'
 import { Route as GuideRouteImport } from './routes/guide'
-import { Route as PlaybookRouteImport } from './routes/playbook'
+import { Route as KitRouteImport } from './routes/kit'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 
 const IndexRoute = IndexRouteImport.update({
@@ -30,9 +30,9 @@ const GuideRoute = GuideRouteImport.update({
   path: '/guide',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlaybookRoute = PlaybookRouteImport.update({
-  id: '/playbook',
-  path: '/playbook',
+const KitRoute = KitRouteImport.update({
+  id: '/kit',
+  path: '/kit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReferralsRoute = ReferralsRouteImport.update({
@@ -45,14 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
   '/guide': typeof GuideRoute
-  '/playbook': typeof PlaybookRoute
+  '/kit': typeof KitRoute
   '/referrals': typeof ReferralsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
   '/guide': typeof GuideRoute
-  '/playbook': typeof PlaybookRoute
+  '/kit': typeof KitRoute
   '/referrals': typeof ReferralsRoute
 }
 export interface FileRoutesById {
@@ -60,22 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
   '/guide': typeof GuideRoute
-  '/playbook': typeof PlaybookRoute
+  '/kit': typeof KitRoute
   '/referrals': typeof ReferralsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/apps' | '/guide' | '/playbook' | '/referrals'
+  fullPaths: '/' | '/apps' | '/guide' | '/kit' | '/referrals'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/apps' | '/guide' | '/playbook' | '/referrals'
-  id: '__root__' | '/' | '/apps' | '/guide' | '/playbook' | '/referrals'
+  to: '/' | '/apps' | '/guide' | '/kit' | '/referrals'
+  id: '__root__' | '/' | '/apps' | '/guide' | '/kit' | '/referrals'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppsRoute: typeof AppsRoute
   GuideRoute: typeof GuideRoute
-  PlaybookRoute: typeof PlaybookRoute
+  KitRoute: typeof KitRoute
   ReferralsRoute: typeof ReferralsRoute
 }
 
@@ -102,11 +102,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuideRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/playbook': {
-      id: '/playbook'
-      path: '/playbook'
-      fullPath: '/playbook'
-      preLoaderRoute: typeof PlaybookRouteImport
+    '/kit': {
+      id: '/kit'
+      path: '/kit'
+      fullPath: '/kit'
+      preLoaderRoute: typeof KitRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/referrals': {
@@ -123,7 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppsRoute: AppsRoute,
   GuideRoute: GuideRoute,
-  PlaybookRoute: PlaybookRoute,
+  KitRoute: KitRoute,
   ReferralsRoute: ReferralsRoute,
 }
 export const routeTree = rootRouteImport
